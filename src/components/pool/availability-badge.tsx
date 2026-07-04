@@ -2,29 +2,11 @@ import type { AvailabilityStatus } from "@/lib/seed-members";
 
 const CONFIG: Record<
   AvailabilityStatus,
-  { label: string; dot: string; text: string; bg: string; border: string }
+  { label: string; chip: string; dot: string }
 > = {
-  available: {
-    label: "Müsait",
-    dot: "bg-emerald",
-    text: "text-emerald-bright",
-    bg: "bg-emerald/10",
-    border: "border-emerald/25",
-  },
-  limited: {
-    label: "Sınırlı",
-    dot: "bg-amber",
-    text: "text-amber-bright",
-    bg: "bg-amber/10",
-    border: "border-amber/25",
-  },
-  unavailable: {
-    label: "Müsait değil",
-    dot: "bg-zinc-500",
-    text: "text-faint",
-    bg: "bg-white/5",
-    border: "border-white/10",
-  },
+  available: { label: "Müsait", chip: "chip-good", dot: "bg-ink" },
+  limited: { label: "Sınırlı", chip: "chip-warn", dot: "bg-warn" },
+  unavailable: { label: "Müsait değil", chip: "chip-dim", dot: "bg-dim" },
 };
 
 export function AvailabilityBadge({
@@ -38,16 +20,11 @@ export function AvailabilityBadge({
 }) {
   const c = CONFIG[status];
   return (
-    <span
-      className={`inline-flex items-center gap-1.5 rounded-full border ${c.bg} ${c.border} ${c.text} ${
-        compact ? "px-2 py-0.5 text-[0.62rem]" : "px-2.5 py-1 text-xs"
-      } font-mono`}
-    >
-      <span className={`h-1.5 w-1.5 rounded-full ${c.dot} ${status === "available" ? "animate-pulse" : ""}`} />
+    <span className={`inline-flex items-center gap-1.5 ${c.chip} ${compact ? "px-2 py-0.5 text-[0.65rem]" : "px-2.5 py-1 text-xs"}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${c.dot}`} />
       {c.label}
-      {until && !compact && (
-        <span className="text-faint normal-case">· {until}</span>
-      )}
+      {until && !compact && <span className="text-text-faint">· {until}</span>}
     </span>
   );
 }
+

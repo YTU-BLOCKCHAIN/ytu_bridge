@@ -1,174 +1,162 @@
 @import "tailwindcss";
 
 /*
- * YTU Bridge — Design System
- * Bridge = köprü + döngü. Dark near-black canvas, glass surfaces.
- * Emerald (growth/blockchain) primary + Amber (ödül/başarı) secondary accent.
- * Space Grotesk display · Inter body · JetBrains Mono for data/wallet/scores.
+ * YTU Bridge — Design System v2
+ * Sıcak açık tema: krem/beyaz zemin + lacivert tek aksan.
+ * Yaz odaklı SaaS tool hissi. Süs minimal, boşluk bol.
+ * Mono sadece verilerde (adres, skor). Glass/blur/pulse yok.
  */
 
 @theme {
-  /* Surfaces */
-  --color-ink: #0a0a0b;
-  --color-panel: #111113;
-  --color-panel-2: #161619;
-  --color-panel-3: #1c1c20;
+  /* Surfaces — sıcak nötr */
+  --color-canvas: #faf9f7;        /* krem zemin */
+  --color-surface: #ffffff;        /* kart/panel */
+  --color-surface-2: #f4f2ee;      /* ikincil yüzey */
+  --color-surface-3: #ebe8e2;      /* hover/aktif */
 
-  /* Brand */
-  --color-emerald: #10b981;
-  --color-emerald-bright: #34d399;
-  --color-emerald-dim: #0c7a5a;
-  --color-amber: #f59e0b;
-  --color-amber-bright: #fbbf24;
-  --color-amber-dim: #b8770a;
+  /* Ink — lacivert aksan */
+  --color-ink: #1e3a5f;            /* deep navy — tek aksan */
+  --color-ink-bright: #2b5278;
+  --color-ink-soft: #5b7a99;
 
   /* Text */
-  --color-fog: #e4e4e7;
-  --color-mist: #a1a1aa;
-  --color-faint: #71717a;
+  --color-text: #1c1b1a;           /* near-black, sıcak */
+  --color-text-soft: #57534e;      /* stone-600 */
+  --color-text-faint: #a8a29e;     /* stone-400 */
 
   /* Lines */
-  --color-line: rgba(255, 255, 255, 0.08);
-  --color-line-bright: rgba(255, 255, 255, 0.14);
+  --color-line: #e7e5e1;           /* stone-200 sıcak */
+  --color-line-soft: #efece8;
 
-  /* Fonts — next/font variables override these at runtime */
-  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  /* Status — sade, tek ton */
+  --color-good: #1e3a5f;           /* lacivert = müsait/başarılı */
+  --color-warn: #b45309;           /* amber-700, sıcak uyarı */
+  --color-dim: #a8a29e;            /* gri = pasif */
+
+  /* Fonts */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   scrollbar-gutter: stable;
 }
 
 body {
-  background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(16, 185, 129, 0.06), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(245, 158, 11, 0.05), transparent 55%),
-    var(--color-ink);
-  color: var(--color-fog);
+  background: var(--color-canvas);
+  color: var(--color-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: rgba(16, 185, 129, 0.25);
-  color: var(--color-fog);
+  background: rgba(30, 58, 95, 0.15);
+  color: var(--color-text);
 }
 
-/* ---- Glass surface ---- */
-.glass {
-  background: rgba(255, 255, 255, 0.025);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--color-line);
-}
-.glass-strong {
-  background: rgba(255, 255, 255, 0.045);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--color-line-bright);
-}
-
-/* ---- Eyebrow / section label (mono, structural) ---- */
+/* ---- Eyebrow / etiket — sade, mono ---- */
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-weight: 600;
-  color: var(--color-faint);
+  font-weight: 500;
+  color: var(--color-text-faint);
 }
 
-/* ---- Skill pill ---- */
-.skill-pill {
+/* ---- Kart ---- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+}
+.card-hover {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.card-hover:hover {
+  border-color: var(--color-ink-soft);
+  box-shadow: 0 1px 3px rgba(28, 27, 26, 0.06);
+}
+
+/* ---- Tag / chip — sade ---- */
+.chip {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.02em;
+  font-size: 0.7rem;
   padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(16, 185, 129, 0.08);
-  color: var(--color-emerald-bright);
-  border: 1px solid rgba(16, 185, 129, 0.22);
+  border-radius: 6px;
+  background: var(--color-surface-2);
+  color: var(--color-text-soft);
+  border: 1px solid var(--color-line);
 }
-.skill-pill.amber {
-  background: rgba(245, 158, 11, 0.08);
-  color: var(--color-amber-bright);
-  border-color: rgba(245, 158, 11, 0.22);
+.chip-ink {
+  background: rgba(30, 58, 95, 0.06);
+  color: var(--color-ink);
+  border-color: rgba(30, 58, 95, 0.18);
+}
+.chip-good {
+  background: rgba(30, 58, 95, 0.06);
+  color: var(--color-good);
+  border-color: rgba(30, 58, 95, 0.18);
+}
+.chip-warn {
+  background: rgba(180, 83, 9, 0.08);
+  color: var(--color-warn);
+  border-color: rgba(180, 83, 9, 0.2);
+}
+.chip-dim {
+  background: var(--color-surface-2);
+  color: var(--color-text-faint);
+  border-color: var(--color-line);
 }
 
-/* ---- Drop zone (drag & drop team building) ---- */
+/* ---- Drop zone (takım kurma) ---- */
 .drop-zone {
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   min-height: 72px;
 }
 .drop-zone.drag-over {
-  background-color: rgba(16, 185, 129, 0.1);
-  border-color: var(--color-emerald);
-  transform: scale(1.01);
+  background-color: rgba(30, 58, 95, 0.06);
+  border-color: var(--color-ink);
 }
 
-/* ---- Card hover lift ---- */
-.card-lift {
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.2s ease;
-}
-.card-lift:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-line-bright);
-  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
-}
-
-/* ---- Loop signature (the core döngü) ---- */
-.loop-track {
-  stroke-dasharray: 4 6;
-  animation: loop-dash 18s linear infinite;
-}
-@keyframes loop-dash {
-  to {
-    stroke-dashoffset: -200;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .loop-track {
-    animation: none;
-  }
-  .card-lift {
-    transition: none;
-  }
-}
-
-/* ---- Scrollbar ---- */
+/* ---- Scrollbar — sade ---- */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+  scrollbar-color: var(--color-line) transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--color-line);
   border-radius: 9999px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-text-faint);
 }
 
-/* ---- Focus ring (a11y) ---- */
+/* ---- Focus (a11y) ---- */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-emerald);
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
 

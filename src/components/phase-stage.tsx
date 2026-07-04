@@ -1,47 +1,41 @@
-// Her döngü aşaması için tutarlı iskelet sayfası.
-// phase: döngü numarası ("01".."06"), faz: hangi build fazında dolacak.
+// İskelet sayfası — henüz geliştirilmemiş bölümler için tutarlı yer tutucu.
 export function PhaseStage({
-  phase,
   title,
   desc,
-  faz,
+  soon,
   children,
 }: {
-  phase: string;
+  phase?: string;
   title: string;
   desc: string;
-  faz: string;
+  soon?: string;
   children?: React.ReactNode;
 }) {
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <div className="eyebrow mb-2">Döngü · aşama {phase}</div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-fog">
-            {title}
-          </h1>
-          <p className="text-mist mt-2 max-w-2xl leading-relaxed">{desc}</p>
-        </div>
-        <span className="rounded-full border border-line px-3 py-1 text-[0.7rem] font-mono text-faint shrink-0">
-          {faz} · iskelet
-        </span>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight text-text">{title}</h1>
+        <p className="text-text-soft mt-2 max-w-2xl leading-relaxed">{desc}</p>
       </div>
 
-      <div className="glass rounded-2xl p-10 min-h-[300px] flex flex-col items-center justify-center text-center">
-        <div className="font-mono text-5xl text-emerald-bright/30 font-semibold mb-3">
-          {phase}
+      <div className="card p-12 min-h-[280px] flex flex-col items-center justify-center text-center">
+        <div className="text-text-faint mb-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-10 w-10">
+            <path d="M12 6v6l4 2" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="12" cy="12" r="9" />
+          </svg>
         </div>
-        <div className="font-display text-lg text-mist">{title}</div>
-        <div className="text-sm text-faint mt-2 max-w-md leading-relaxed">
-          {desc}
-        </div>
-        <div className="mt-6 text-xs font-mono text-faint border border-line rounded-md px-3 py-1.5">
-          {faz} aşamasında geliştirilecek
-        </div>
+        <div className="text-lg font-medium text-text-soft">{title}</div>
+        <div className="text-sm text-text-faint mt-2 max-w-md leading-relaxed">{desc}</div>
+        {soon && (
+          <div className="mt-5 text-xs text-text-faint border border-line rounded-md px-3 py-1.5">
+            {soon}
+          </div>
+        )}
       </div>
 
       {children}
     </div>
   );
 }
+

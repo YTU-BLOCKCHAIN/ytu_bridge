@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/components/layout/app-shell";
-
-const display = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
 
 const sans = Inter({
   variable: "--font-sans",
@@ -19,14 +12,14 @@ const sans = Inter({
 const mono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Bridge — YTÜ Blockchain Hackathon Paneli",
+  title: "Bridge — YTÜ Blockchain",
   description:
-    "YTÜ Blockchain Topluluğu için hackathon katılım döngüsünü yöneten iç platform: yetenek havuzu, keşif, dizin, takım kurma ve sonuçlandırma.",
+    "YTÜ Blockchain Topluluğu için hackathon katılım platformu: topluluk, hackathonlar, projeler ve takım kurma.",
 };
 
 export default function RootLayout({
@@ -37,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      className={`${sans.variable} ${mono.variable} h-full antialiased`}
     >
       <body className="min-h-full">
         <AppShell>{children}</AppShell>
@@ -45,4 +38,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 

@@ -1,128 +1,128 @@
-import { LoopDiagram } from "@/components/loop-diagram";
+import Link from "next/link";
+import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
+import { SEED_MEMBERS } from "@/lib/seed-members";
 import { BridgeMark } from "@/components/layout/bridge-mark";
 
-const STATS = [
-  { label: "Havuzdaki üye", value: "6", sub: "4 müsait · 2 sınırlı", tone: "emerald" },
-  { label: "Yaklaşan hackathon", value: "1", sub: "ETHGlobal İstanbul", tone: "amber" },
-  { label: "Envanter proje", value: "6", sub: "2 working-demo", tone: "emerald" },
-  { label: "Aktif atama", value: "0", sub: "Bu tur takım yok", tone: "mist" },
-] as const;
-
-const PHASES = [
-  { n: "01", title: "Yetenek Havuzu", body: "Skill, seviye, müsaitlik ve geçmiş katılımlarla üye profilleri. Her tur güçlenir." },
-  { n: "02", title: "Keşif", body: "Admin aylık hackathon listesini yükler. Eşleştirme motoru 'hangi hackathon ve neden uygun' cevabını verir." },
-  { n: "03", title: "Dizin", body: "Üyeler hackathonları DoraHacks tarzı kart galerisinde gezer, detayları görür, ilgi bildirir." },
-  { n: "04", title: "Takım & Atama", body: "Kanal 1: lider sürükle-bırak kurar. Kanal 2: üye joker takım kurup davet eder." },
-  { n: "05", title: "Katılım", body: "Takım yarışır. Resmi kulüp girişimi veya bireysel/joker — ayrım channel alanıyla." },
-  { n: "06", title: "Sonuç → Dönüş", body: "Değerlendirme (puan + güçlü/zayıf + öğrenilen skill) havuza döner. Bir sonraki tur daha akıllı. ↻" },
-];
-
 export default function Home() {
+  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming");
+  const availableMembers = SEED_MEMBERS.filter((m) => m.availability.status === "available").length;
+
   return (
-    <div className="space-y-8">
-      {/* Hero */}
-      <section className="grid lg:grid-cols-[1.4fr_1fr] gap-6 items-center">
-        <div className="space-y-5">
-          <div className="flex items-center gap-2 eyebrow">
-            <BridgeMark className="h-4 w-4" />
-            <span>YTÜ Blockchain · İç panel</span>
-          </div>
-          <h1 className="font-display text-4xl md:text-5xl font-semibold tracking-tight text-fog leading-[1.05]">
-            Hackathon katılım döngüsü,
-            <span className="text-emerald-bright"> tek köprüde</span>.
-          </h1>
-          <p className="text-mist text-[15px] max-w-xl leading-relaxed">
-            Yetenek havuzundan keşfe, dizinden takım kurmaya ve sonuçlandırmaya —
-            her tur havuz güçlenerek döngüye döner. İki paralel kanal: kulüp
-            girişimi ve bireysel/joker takımlar.
-          </p>
-          <div className="flex flex-wrap gap-3 pt-1">
-            <a
-              href="/discovery"
-              className="inline-flex items-center gap-2 rounded-lg bg-emerald text-ink font-semibold text-sm px-4 py-2.5 hover:bg-emerald-bright transition-colors"
-            >
-              Keşfe başla
-              <span aria-hidden>→</span>
-            </a>
-            <a
-              href="/pool"
-              className="inline-flex items-center gap-2 rounded-lg border border-line text-fog font-medium text-sm px-4 py-2.5 hover:border-line-bright transition-colors"
-            >
-              Havuzu gör
-            </a>
-          </div>
+    <div className="space-y-10">
+      {/* Hero — sade, yaz odaklı */}
+      <section className="pt-4">
+        <div className="flex items-center gap-2 mb-4">
+          <BridgeMark className="h-5 w-5" />
+          <span className="text-sm text-text-soft">YTÜ Blockchain Topluluğu</span>
         </div>
-
-        <div className="glass rounded-2xl p-6 flex items-center justify-center">
-          <LoopDiagram className="w-full max-w-[340px]" />
+        <h1 className="text-4xl font-semibold tracking-tight text-text leading-[1.1] max-w-2xl">
+          Hackathonları keşfet, takımını kur, yarış.
+        </h1>
+        <p className="text-text-soft mt-4 text-[16px] max-w-xl leading-relaxed">
+          Topluluk üyelerini, mevcut projeleri ve yaklaşan hackathonları tek
+          yerden gör. Uygun olanı bul, başvur veya kendi takımını kur.
+        </p>
+        <div className="flex flex-wrap gap-3 mt-6">
+          <Link
+            href="/directory"
+            className="inline-flex items-center gap-2 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
+          >
+            Hackathonları gör
+            <span aria-hidden>→</span>
+          </Link>
+          <Link
+            href="/pool"
+            className="inline-flex items-center gap-2 rounded-lg border border-line text-text font-medium text-sm px-4 py-2.5 hover:border-ink-soft transition-colors"
+          >
+            Topluluğu gör
+          </Link>
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Özet rakamlar — sade, tek satır */}
+      <section className="grid grid-cols-3 gap-4 border-y border-line py-6">
+        <Stat value={String(SEED_MEMBERS.length)} label="topluluk üyesi" />
+        <Stat value={String(upcoming.length)} label="yaklaşan hackathon" />
+        <Stat value={String(availableMembers)} label="şu an müsait" />
+      </section>
+
+      {/* Yaklaşan hackathonlar */}
       <section>
-        <div className="eyebrow mb-3">Bu tur</div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {STATS.map((s) => (
-            <div key={s.label} className="glass rounded-xl p-4 card-lift">
-              <div className="font-mono text-3xl font-semibold text-fog">
-                {s.value}
+        <div className="flex items-baseline justify-between mb-4">
+          <h2 className="text-lg font-semibold text-text">Yaklaşan hackathonlar</h2>
+          <Link href="/directory" className="text-sm text-ink hover:underline">
+            Tümünü gör →
+          </Link>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {upcoming.map((h) => (
+            <Link key={h.id} href={`/hackathons/${h.id}`} className="card card-hover p-5 block">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="font-medium text-text truncate">{h.name}</div>
+                  <div className="text-sm text-text-soft mt-0.5">{h.organizer}</div>
+                </div>
+                {h.prizePool && (
+                  <span className="font-mono text-sm text-text shrink-0">{h.prizePool}</span>
+                )}
               </div>
-              <div className="text-sm text-mist mt-1">{s.label}</div>
-              <div
-                className={
-                  "text-[0.7rem] font-mono mt-2 " +
-                  (s.tone === "amber"
-                    ? "text-amber-bright"
-                    : s.tone === "emerald"
-                    ? "text-emerald-bright"
-                    : "text-faint")
-                }
-              >
-                {s.sub}
+              <div className="flex items-center gap-3 mt-3 text-[13px] text-text-faint">
+                <span>{new Date(h.dateStart).toLocaleDateString("tr-TR", { day: "numeric", month: "short" })}</span>
+                <span>·</span>
+                <span>{h.location}</span>
               </div>
-            </div>
+              {h.tracks.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {h.tracks.slice(0, 3).map((t) => (
+                    <span key={t} className="chip chip-ink">{t}</span>
+                  ))}
+                </div>
+              )}
+            </Link>
           ))}
+          {upcoming.length === 0 && (
+            <div className="card p-8 text-center text-text-soft col-span-full">
+              Şu an yaklaşan hackathon yok.
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Döngü aşamaları (numbered — gerçek sequence) */}
+      {/* Topluluktan birkaç üye */}
       <section>
-        <div className="eyebrow mb-3">Döngü aşamaları</div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {PHASES.map((p) => (
-            <div key={p.n} className="glass rounded-xl p-4 card-lift">
-              <div className="flex items-baseline gap-2 mb-2">
-                <span className="font-mono text-emerald-bright text-sm font-semibold">
-                  {p.n}
-                </span>
-                <span className="font-display font-semibold text-fog text-[15px]">
-                  {p.title}
-                </span>
+        <div className="flex items-baseline justify-between mb-4">
+          <h2 className="text-lg font-semibold text-text">Topluluktan birkaç kişi</h2>
+          <Link href="/pool" className="text-sm text-ink hover:underline">
+            Hepsini gör →
+          </Link>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SEED_MEMBERS.slice(0, 3).map((m) => (
+            <Link key={m.id} href={`/pool/${m.id}`} className="card card-hover p-4 block">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-surface-2 border border-line grid place-items-center text-sm font-semibold text-text shrink-0">
+                  {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                </div>
+                <div className="min-w-0">
+                  <div className="font-medium text-text truncate">{m.fullName}</div>
+                  <div className="text-[13px] text-text-soft truncate">
+                    {m.skills.slice(0, 2).map((s) => s.name).join(" · ")}
+                  </div>
+                </div>
               </div>
-              <p className="text-[13px] text-mist leading-relaxed">{p.body}</p>
-            </div>
+            </Link>
           ))}
-        </div>
-      </section>
-
-      {/* İki kanal */}
-      <section className="grid md:grid-cols-2 gap-3">
-        <div className="glass rounded-xl p-5">
-          <div className="eyebrow mb-2">Kanal 1 · Kulüp Girişimi</div>
-          <p className="text-sm text-mist leading-relaxed">
-            Lider bir hackathon seçer, sürükle-bırak ile takımı kurar ve atar.
-            Resmi kulüp katılımı; "Onayla &amp; Bildir" ile email tetiklenir.
-          </p>
-        </div>
-        <div className="glass rounded-xl p-5">
-          <div className="eyebrow mb-2 text-amber-bright">Kanal 2 · Bireysel / Joker</div>
-          <p className="text-sm text-mist leading-relaxed">
-            Üye dizinden istediği hackathona başvurur, kendi joker takımını
-            kurar ve diğer üyeleri davet eder. Lider nihai onayı verebilir.
-          </p>
         </div>
       </section>
     </div>
   );
 }
 
+function Stat({ value, label }: { value: string; label: string }) {
+  return (
+    <div>
+      <div className="text-2xl font-semibold text-text">{value}</div>
+      <div className="text-sm text-text-soft mt-0.5">{label}</div>
+    </div>
+  );
+}
