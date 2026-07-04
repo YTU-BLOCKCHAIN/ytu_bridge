@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { SEED_MEMBERS } from "@/lib/seed-members";
+import { ApplyButton } from "@/components/apply-button";
 
 export function generateStaticParams() {
   return DISCOVERED_HACKATHONS.map((h) => ({ id: h.id }));
@@ -176,15 +177,10 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
       <div className="card p-5">
         <h2 className="text-sm font-medium text-text mb-2">Başvur</h2>
         <p className="text-[13px] text-text-soft leading-relaxed mb-3">
-          Bu hackathona bireysel başvurabilir veya kendi takımını kurabilirsin.
-          Başvuru akışı yakında geliyor.
+          Bu hackathona bireysel başvurabilir veya kendi joker takımını kurup
+          diğer üyelere davet gönderebilirsin.
         </p>
-        <button
-          disabled
-          className="inline-flex items-center gap-2 rounded-lg border border-line text-text-faint font-medium text-sm px-4 py-2.5 cursor-not-allowed"
-        >
-          Başvur (yakında)
-        </button>
+        <ApplyButton hackathon={h} members={SEED_MEMBERS} />
       </div>
     </div>
   );

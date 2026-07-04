@@ -7,7 +7,8 @@ const NAV = [
   { href: "/pool", label: "Topluluk", icon: "users" },
   { href: "/directory", label: "Hackathonlar", icon: "compass" },
   { href: "/projects", label: "Projeler", icon: "cube" },
-  { href: "/assignments", label: "Takımlar", icon: "shuffle" },
+  { href: "/assignments", label: "Takım kur", icon: "shuffle" },
+  { href: "/applications", label: "Başvurularım", icon: "inbox" },
 ] as const;
 
 const ICONS: Record<string, React.ReactNode> = {
@@ -18,6 +19,7 @@ const ICONS: Record<string, React.ReactNode> = {
   compass: <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm4-14-5 2-2 5 5-2 2-5Z" />,
   cube: <path d="M12 2 3 7v10l9 5 9-5V7l-9-5Zm0 0v20M3 7l9 5 9-5" strokeLinejoin="round" />,
   shuffle: <path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />,
+  inbox: <path d="M22 12h-6l-2 3h-4l-2-3H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11Z" />,
 };
 
 export function AppShell({ children }: { children: React.ReactNode }) {
