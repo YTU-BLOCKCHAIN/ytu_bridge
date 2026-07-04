@@ -56,6 +56,7 @@ export interface DiscoveredHackathon {
   status: HackathonStatus;
   tracks: HackathonTrack[];
   chains: Chain[];
+  idealTeamSize: number;
   prizePool?: string;
   applicationDeadline?: string;
   externalLink?: string;
@@ -88,6 +89,7 @@ const RAW: DiscoveredHackathon[] = [
     status: "upcoming",
     tracks: ["DeFi", "NFT/Gaming", "Infra/Tooling"],
     chains: ["Ethereum", "Base"],
+    idealTeamSize: 4,
     prizePool: "$1M+",
     applicationDeadline: "2026-02-20",
     externalLink: "https://ethglobal.com/events/istanbul2026",
@@ -105,6 +107,7 @@ const RAW: DiscoveredHackathon[] = [
     status: "upcoming",
     tracks: ["NFT/Gaming", "DeFi"],
     chains: ["Solana"],
+    idealTeamSize: 4,
     prizePool: "$500K",
     applicationDeadline: "2026-03-25",
     externalLink: "https://solana.com/breakpoint",
