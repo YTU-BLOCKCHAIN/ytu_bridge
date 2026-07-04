@@ -4,6 +4,7 @@ import { SEED_MEMBERS } from "@/lib/seed-members";
 import { AvailabilityBadge } from "@/components/pool/availability-badge";
 import { SkillBar } from "@/components/pool/skill-bar";
 import { MemberCard } from "@/components/pool/member-card";
+import { MemberEvaluations } from "@/components/pool/member-evaluations";
 
 export function generateStaticParams() {
   return SEED_MEMBERS.map((m) => ({ id: m.id }));
@@ -91,6 +92,8 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
       </div>
 
       {/* Diğer üyeler — takım kurmak için */}
+      <MemberEvaluations memberId={member.id} />
+
       <div>
         <div className="flex items-baseline justify-between mb-3">
           <h2 className="text-sm font-medium text-text">Topluluktan diğerleri</h2>
