@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BridgeMark } from "@/components/layout/bridge-mark";
+import { UserMenu } from "@/components/user-menu";
 
 // Üye odaklı navigasyon — yönetim dili (faz, kanal, döngü) yok.
 const NAV = [
@@ -24,7 +25,15 @@ const ICONS: Record<string, React.ReactNode> = {
   check: <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" strokeLinecap="round" strokeLinejoin="round" />,
 };
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  userEmail,
+  userName,
+}: {
+  children: React.ReactNode;
+  userEmail: string;
+  userName: string;
+}) {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -84,12 +93,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             Hackathon katılım platformu
           </div>
           <div className="flex items-center gap-3">
-            <button className="text-xs text-text-soft hover:text-text border border-line rounded-md px-3 py-1.5 transition-colors hover:border-ink-soft">
-              Cüzdan bağla
-            </button>
-            <div className="h-8 w-8 rounded-full bg-ink grid place-items-center text-surface text-xs font-semibold">
-              S
-            </div>
+            <UserMenu email={userEmail} name={userName} />
           </div>
         </header>
         <main className="flex-1 px-6 py-8 max-w-[1400px] w-full mx-auto">
