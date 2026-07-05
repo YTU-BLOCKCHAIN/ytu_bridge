@@ -42,6 +42,8 @@ export type Chain =
   | "Polygon"
   | "Arbitrum"
   | "Optimism"
+  | "Algorand"
+  | "Casper"
   | "Other";
 
 export type HackathonStatus = "upcoming" | "ongoing" | "completed";
@@ -186,6 +188,44 @@ const RAW: DiscoveredHackathon[] = [
     externalLink: "https://ethglobal.com/events/mumbai2026",
     source: "ETHGlobal (araştırıldı)",
     notes: "IRL hackathon — Mumbai. EVM odaklı.",
+    discoveredAt: "2026-07-05",
+  },
+  // --- Algorand x402 Challenge (algorand.co/global-x402-challenge) ---
+  {
+    id: "h7",
+    name: "Global x402 Challenge",
+    organizer: "Algorand Foundation",
+    dateStart: "2026-07-15",
+    dateEnd: "2026-11-05",
+    location: "online + Devcon 8 India (finalistler)",
+    status: "upcoming",
+    tracks: ["AI×Web3", "Infra/Tooling", "DeFi"],
+    chains: ["Algorand"],
+    idealTeamSize: 4,
+    prizePool: "$100K USD + 500K ALGO",
+    applicationDeadline: "2026-10-01",
+    externalLink: "https://algorand.co/global-x402-challenge",
+    source: "algorand.co (araştırıldı)",
+    notes: "x402 protokolü — API endpoint'lerini pay-per-request servisine çevir (agentic commerce). Track'ler: veri satışı, compute, aksiyon, doğrulama. Top 5 finalist Devcon 8'de canlı sunum yapar. Mevcut projelerden doğrudan uygun olan yok — yeni proje gerekiyor ama AI×Web3 track'i catchcat-monad'ın AI tarafına yakın.",
+    discoveredAt: "2026-07-05",
+  },
+  // --- DoraHacks Casper Agentic Buildathon (dorahacks.io) ---
+  {
+    id: "h8",
+    name: "Casper Agentic Buildathon",
+    organizer: "DoraHacks + Casper Network",
+    dateStart: "2026-07-10",
+    dateEnd: "2026-08-15",
+    location: "online",
+    status: "upcoming",
+    tracks: ["AI×Web3", "Infra/Tooling"],
+    chains: ["Casper"],
+    idealTeamSize: 4,
+    prizePool: "TBD",
+    applicationDeadline: "2026-08-10",
+    externalLink: "https://dorahacks.io/hackathon/casper-agentic-buildathon/detail",
+    source: "DoraHacks (kullanıcı gönderdi)",
+    notes: "Casper blockchain (Pure Proof-of-Stake) üzerinde agentic/AI odaklı buildathon. Detay sayfası bot koruması yüzünden tam çekilemedi — prize/track detayları için resmi siteyi elle doğrula. Mevcut projelerden doğrudan uygun olan yok (Casper zinciri farklı).",
     discoveredAt: "2026-07-05",
   },
 ];
