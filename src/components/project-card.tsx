@@ -1,11 +1,12 @@
+import { Badge } from "@/components/ui/badge";
 import type { SeedProject, ProjectStatus } from "@/lib/seed-projects";
 
-const STATUS_LABELS: Record<ProjectStatus, { label: string; chip: string }> = {
-  "working-demo": { label: "Çalışan demo", chip: "chip-good" },
-  "prototype": { label: "Prototip", chip: "chip-ink" },
-  "idea": { label: "Fikir", chip: "chip-dim" },
-  "production": { label: "Production", chip: "chip-good" },
-  "abandoned": { label: "Terk edilmiş", chip: "chip-dim" },
+const STATUS_LABELS: Record<ProjectStatus, { label: string; variant: "soft" | "dim" }> = {
+  "working-demo": { label: "Çalışan demo", variant: "soft" },
+  "prototype": { label: "Prototip", variant: "soft" },
+  "idea": { label: "Fikir", variant: "dim" },
+  "production": { label: "Production", variant: "soft" },
+  "abandoned": { label: "Terk edilmiş", variant: "dim" },
 };
 
 const REUSE_LABELS = { high: "Yüksek", medium: "Orta", low: "Düşük" } as const;
@@ -27,7 +28,7 @@ export function ProjectCard({ project, fitScore }: { project: SeedProject; fitSc
         )}
       </div>
 
-      <span className={`self-start chip ${st.chip} text-[0.65rem] mb-3`}>{st.label}</span>
+      <Badge variant={st.variant} className="self-start text-[0.65rem] mb-3">{st.label}</Badge>
 
       <p className="text-[13px] text-text-soft leading-relaxed mb-4 line-clamp-3">
         {project.description}
@@ -37,7 +38,7 @@ export function ProjectCard({ project, fitScore }: { project: SeedProject; fitSc
       {project.tracks.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-3">
           {project.tracks.map((t) => (
-            <span key={t} className="chip chip-ink text-[0.65rem]">{t}</span>
+            <Badge key={t} variant="soft" className="text-[0.65rem]">{t}</Badge>
           ))}
         </div>
       )}
@@ -46,7 +47,7 @@ export function ProjectCard({ project, fitScore }: { project: SeedProject; fitSc
       {project.chains.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-3">
           {project.chains.map((c) => (
-            <span key={c} className="chip text-[0.65rem]">{c}</span>
+            <Badge key={c} variant="muted" className="text-[0.65rem]">{c}</Badge>
           ))}
         </div>
       )}

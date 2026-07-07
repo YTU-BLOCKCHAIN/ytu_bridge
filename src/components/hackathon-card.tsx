@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import type { DiscoveredHackathon } from "@/lib/discovered-hackathons";
 
 function formatDate(iso: string): string {
@@ -24,14 +25,15 @@ export function HackathonCard({ h }: { h: DiscoveredHackathon }) {
     <Link href={`/hackathons/${h.id}`} className="card card-hover p-5 block group flex flex-col h-full">
       {/* Üst: durum */}
       <div className="flex items-center gap-2 mb-3">
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[0.65rem] ${
-          h.status === "upcoming" ? "chip-good" : h.status === "ongoing" ? "chip-warn" : "chip-dim"
-        }`}>
+        <Badge
+          variant={h.status === "upcoming" ? "soft" : h.status === "ongoing" ? "warn" : "dim"}
+          className="gap-1.5 text-[0.65rem]"
+        >
           <span className={`h-1.5 w-1.5 rounded-full ${
             h.status === "upcoming" ? "bg-ink" : h.status === "ongoing" ? "bg-warn" : "bg-dim"
           }`} />
           {h.status === "upcoming" ? "Yaklaşan" : h.status === "ongoing" ? "Devam eden" : "Tamamlandı"}
-        </span>
+        </Badge>
       </div>
 
       <h3 className="font-medium text-text leading-tight group-hover:text-ink transition-colors">
@@ -61,7 +63,7 @@ export function HackathonCard({ h }: { h: DiscoveredHackathon }) {
       {h.tracks.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-3">
           {h.tracks.map((t) => (
-            <span key={t} className="chip chip-ink">{t}</span>
+            <Badge key={t} variant="soft">{t}</Badge>
           ))}
         </div>
       )}

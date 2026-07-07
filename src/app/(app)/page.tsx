@@ -1,7 +1,11 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { SEED_MEMBERS } from "@/lib/seed-members";
 import { BridgeMark } from "@/components/layout/bridge-mark";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Home() {
   const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming");
@@ -23,19 +27,15 @@ export default function Home() {
           yerden gör. Uygun olanı bul, başvur veya kendi takımını kur.
         </p>
         <div className="flex flex-wrap gap-3 mt-6">
-          <Link
-            href="/directory"
-            className="inline-flex items-center gap-2 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-          >
-            Hackathonları gör
-            <span aria-hidden>→</span>
-          </Link>
-          <Link
-            href="/pool"
-            className="inline-flex items-center gap-2 rounded-lg border border-line text-text font-medium text-sm px-4 py-2.5 hover:border-ink-soft transition-colors"
-          >
-            Topluluğu gör
-          </Link>
+          <Button asChild size="lg">
+            <Link href="/directory">
+              Hackathonları gör
+              <ArrowRight />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/pool">Topluluğu gör</Link>
+          </Button>
         </div>
       </section>
 
@@ -74,7 +74,7 @@ export default function Home() {
               {h.tracks.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-3">
                   {h.tracks.slice(0, 3).map((t) => (
-                    <span key={t} className="chip chip-ink">{t}</span>
+                    <Badge key={t} variant="soft">{t}</Badge>
                   ))}
                 </div>
               )}
@@ -100,9 +100,11 @@ export default function Home() {
           {SEED_MEMBERS.slice(0, 3).map((m) => (
             <Link key={m.id} href={`/pool/${m.id}`} className="card card-hover p-4 block">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-surface-2 border border-line grid place-items-center text-sm font-semibold text-text shrink-0">
-                  {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                </div>
+                <Avatar className="size-10 shrink-0">
+                  <AvatarFallback className="text-sm font-semibold">
+                    {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0">
                   <div className="font-medium text-text truncate">{m.fullName}</div>
                   <div className="text-[13px] text-text-soft truncate">

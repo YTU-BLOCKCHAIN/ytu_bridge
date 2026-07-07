@@ -4,6 +4,25 @@ import { useState } from "react";
 import { SEED_MEMBERS } from "@/lib/seed-members";
 import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { createEvaluation, RESULT_OPTIONS, type HackathonResult } from "@/lib/evaluations";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Check } from "lucide-react";
 
 const COMMON_STRENGTHS = [
   "Hızlı prototip",
@@ -72,74 +91,70 @@ export function EvaluateModal({ onClose }: { onClose: () => void }) {
 
   if (submitted) {
     return (
-      <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
-        <div className="card p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+      <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
+        <DialogContent className="sm:max-w-md">
           <div className="text-center">
             <div className="h-12 w-12 rounded-full bg-ink/10 grid place-items-center mx-auto mb-4">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="2" className="h-6 w-6">
-                <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <Check className="h-6 w-6 text-ink" />
             </div>
-            <h3 className="text-lg font-semibold text-text mb-2">Değerlendirme kaydedildi</h3>
+            <DialogHeader className="mb-2">
+              <DialogTitle className="text-lg">Değerlendirme kaydedildi</DialogTitle>
+            </DialogHeader>
             <p className="text-sm text-text-soft leading-relaxed mb-5">
               Sonuç havuza döndü. Üye puanı ve geçmişi güncellendi — bir sonraki
               tur daha akıllı seçim yapacak.
             </p>
-            <button
-              onClick={onClose}
-              className="rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-            >
+            <Button size="lg" onClick={onClose}>
               Tamam
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
-      <div className="card p-6 max-w-lg w-full my-8" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between mb-5">
-          <div>
-            <h3 className="text-lg font-semibold text-text">Değerlendirme ekle</h3>
-            <p className="text-sm text-text-soft mt-0.5">Etkinlik sonrası — havuza dönüş</p>
-          </div>
-          <button onClick={onClose} className="text-text-faint hover:text-text transition-colors" aria-label="kapat">✕</button>
-        </div>
+    <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-lg">Değerlendirme ekle</DialogTitle>
+          <DialogDescription>Etkinlik sonrası — havuza dönüş</DialogDescription>
+        </DialogHeader>
 
         {/* Hackathon + üye seçimi */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-xs text-text-faint block mb-1.5">Hackathon</label>
-            <select
-              value={hackathonId}
-              onChange={(e) => setHackathonId(e.target.value)}
-              className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft"
-            >
-              {allHackathons.map((h) => (
-                <option key={h.id} value={h.id}>{h.name}</option>
-              ))}
-            </select>
+            <Label className="text-xs text-text-faint block mb-1.5">Hackathon</Label>
+            <Select value={hackathonId} onValueChange={setHackathonId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Hackathon seç" />
+              </SelectTrigger>
+              <SelectContent>
+                {allHackathons.map((h) => (
+                  <SelectItem key={h.id} value={h.id}>{h.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div>
-            <label className="text-xs text-text-faint block mb-1.5">Üye</label>
-            <select
-              value={memberId}
-              onChange={(e) => setMemberId(e.target.value)}
-              className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft"
-            >
-              {SEED_MEMBERS.map((m) => (
-                <option key={m.id} value={m.id}>{m.fullName}</option>
-              ))}
-            </select>
+            <Label className="text-xs text-text-faint block mb-1.5">Üye</Label>
+            <Select value={memberId} onValueChange={setMemberId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Üye seç" />
+              </SelectTrigger>
+              <SelectContent>
+                {SEED_MEMBERS.map((m) => (
+                  <SelectItem key={m.id} value={m.id}>{m.fullName}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
         {/* Puan slider */}
-        <div className="mb-4">
+        <div>
           <div className="flex items-baseline justify-between mb-2">
-            <label className="text-xs text-text-faint">Puan</label>
+            <Label className="text-xs text-text-faint">Puan</Label>
             <span className="font-mono text-lg font-semibold text-text">{score}</span>
           </div>
           <input
@@ -153,8 +168,8 @@ export function EvaluateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Sonuç */}
-        <div className="mb-4">
-          <label className="text-xs text-text-faint block mb-1.5">Sonuç</label>
+        <div>
+          <Label className="text-xs text-text-faint block mb-1.5">Sonuç</Label>
           <div className="flex flex-wrap gap-1.5">
             {RESULT_OPTIONS.map((r) => (
               <button
@@ -172,8 +187,8 @@ export function EvaluateModal({ onClose }: { onClose: () => void }) {
 
 
         {/* Güçlü yönler */}
-        <div className="mb-4">
-          <label className="text-xs text-text-faint block mb-1.5">Güçlü yönler</label>
+        <div>
+          <Label className="text-xs text-text-faint block mb-1.5">Güçlü yönler</Label>
           <div className="flex flex-wrap gap-1.5">
             {COMMON_STRENGTHS.map((s) => (
               <button
@@ -190,8 +205,8 @@ export function EvaluateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Geliştirilecek yönler */}
-        <div className="mb-4">
-          <label className="text-xs text-text-faint block mb-1.5">Geliştirilecek yönler</label>
+        <div>
+          <Label className="text-xs text-text-faint block mb-1.5">Geliştirilecek yönler</Label>
           <div className="flex flex-wrap gap-1.5">
             {COMMON_IMPROVEMENTS.map((s) => (
               <button
@@ -208,8 +223,8 @@ export function EvaluateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Öğrenilen skill'ler */}
-        <div className="mb-4">
-          <label className="text-xs text-text-faint block mb-1.5">Öğrenilen beceriler</label>
+        <div>
+          <Label className="text-xs text-text-faint block mb-1.5">Öğrenilen beceriler</Label>
           <div className="flex flex-wrap gap-1.5">
             {LEARNABLE_SKILLS.map((s) => (
               <button
@@ -226,34 +241,27 @@ export function EvaluateModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Notlar */}
-        <div className="mb-5">
-          <label className="text-xs text-text-faint block mb-1.5">Not (opsiyonel)</label>
-          <textarea
+        <div>
+          <Label className="text-xs text-text-faint block mb-1.5">Not (opsiyonel)</Label>
+          <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Ek yorum…"
             rows={2}
-            className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft resize-none"
+            className="w-full resize-none"
           />
         </div>
 
         {/* Gönder */}
-        <div className="flex gap-2 pt-2 border-t border-line-soft">
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-lg border border-line text-text-soft font-medium text-sm px-4 py-2.5 hover:border-ink-soft transition-colors"
-          >
+        <DialogFooter>
+          <Button variant="outline" size="lg" onClick={onClose} className="flex-1">
             İptal
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="flex-1 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-          >
+          </Button>
+          <Button size="lg" onClick={handleSubmit} className="flex-1">
             Değerlendirmeyi kaydet
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
-

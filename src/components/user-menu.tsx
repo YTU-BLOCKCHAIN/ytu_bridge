@@ -2,11 +2,19 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { LogOut } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function UserMenu({ email, name }: { email: string; name: string }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const supabase = createClient();
 
   async function handleLogout() {
@@ -23,33 +31,27 @@ export function UserMenu({ email, name }: { email: string; name: string }) {
     .toUpperCase();
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-lg hover:bg-surface-2 transition-colors px-2 py-1"
-      >
-        <div className="h-8 w-8 rounded-full bg-ink grid place-items-center text-surface text-xs font-semibold">
-          {initials}
-        </div>
-      </button>
-
-      {open && (
-        <>
-          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-full mt-2 z-40 card p-3 w-56">
-            <div className="px-2 py-1.5 mb-1">
-              <div className="text-sm font-medium text-text truncate">{name}</div>
-              <div className="text-xs text-text-faint truncate">{email}</div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left text-sm text-text-soft hover:text-warn hover:bg-surface-2 rounded-lg px-2 py-1.5 transition-colors"
-            >
-              Çıkış yap
-            </button>
-          </div>
-        </>
-      )}
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="flex items-center gap-2 rounded-lg hover:bg-surface-2 transition-colors px-2 py-1">
+          <Avatar className="size-8">
+            <AvatarFallback className="bg-ink text-surface text-xs font-semibold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="font-normal">
+          <div className="text-sm font-medium text-text truncate">{name}</div>
+          <div className="text-xs text-text-faint truncate">{email}</div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive" onSelect={handleLogout}>
+          <LogOut />
+          Çıkış yap
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -5,6 +5,8 @@ import { AvailabilityBadge } from "@/components/pool/availability-badge";
 import { SkillBar } from "@/components/pool/skill-bar";
 import { MemberCard } from "@/components/pool/member-card";
 import { MemberEvaluations } from "@/components/pool/member-evaluations";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function generateStaticParams() {
   return SEED_MEMBERS.map((m) => ({ id: m.id }));
@@ -43,9 +45,9 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
       {/* Profil başlığı */}
       <div className="card p-6">
         <div className="flex items-start gap-5 flex-wrap">
-          <div className="h-16 w-16 rounded-2xl bg-surface-2 border border-line grid place-items-center text-xl font-semibold text-text shrink-0">
-            {initials}
-          </div>
+          <Avatar className="size-16 rounded-2xl shrink-0">
+            <AvatarFallback className="rounded-2xl text-xl font-semibold">{initials}</AvatarFallback>
+          </Avatar>
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl font-semibold text-text">{member.fullName}</h1>
             <div className="flex items-center gap-3 mt-1.5 flex-wrap">
@@ -55,7 +57,7 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
             {member.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-3">
                 {member.tags.map((t) => (
-                  <span key={t} className="chip">{t}</span>
+                  <Badge key={t} variant="muted">{t}</Badge>
                 ))}
               </div>
             )}

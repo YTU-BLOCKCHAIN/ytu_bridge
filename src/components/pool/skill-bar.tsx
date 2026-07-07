@@ -21,7 +21,7 @@ export function SkillBar({
           <span
             key={i}
             className={`h-1.5 w-1.5 rounded-full ${
-              i < level ? "bg-ink" : "bg-line"
+              i < level ? "bg-primary" : "bg-border"
             }`}
           />
         ))}

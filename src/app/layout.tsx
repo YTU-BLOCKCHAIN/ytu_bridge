@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
 const sans = Inter({
   variable: "--font-sans",
@@ -29,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="tr"
-      className={`${sans.variable} ${mono.variable} h-full antialiased`}
+      className={cn("h-full antialiased font-sans", sans.variable, mono.variable)}
     >
       <body className="min-h-full">{children}</body>
     </html>

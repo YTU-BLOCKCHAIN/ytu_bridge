@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { BridgeMark } from "@/components/layout/bridge-mark";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 export function LoginForm() {
   const router = useRouter();
@@ -72,12 +77,13 @@ export function LoginForm() {
             <p className="text-sm text-text-soft leading-relaxed mb-5">
               Linke tıkla, giriş yapmış olacaksın. Link 1 saat geçerli.
             </p>
-            <button
+            <Button
+              variant="link"
               onClick={() => { setSent(false); setEmail(""); }}
-              className="text-sm text-ink hover:underline"
             >
-              ← Farklı mail dene
-            </button>
+              <ArrowLeft />
+              Farklı mail dene
+            </Button>
           </div>
         ) : (
           /* Login formu */
@@ -89,40 +95,50 @@ export function LoginForm() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="text-xs text-text-faint block mb-1.5">
+                <Label htmlFor="email" className="text-xs text-text-faint mb-1.5">
                   Okul mailin
-                </label>
-                <input
+                </Label>
+                <Input
+                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ad.soyad@std.yildiz.edu.tr"
                   required
-                  className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2.5 text-sm text-text placeholder:text-text-faint outline-none focus:border-ink-soft"
+                  className="w-full"
                 />
                 {email && !isValid && (
-                  <p className="text-xs text-warn mt-1.5">
+                  <Badge
+                    variant="warn"
+                    className="mt-1.5 h-auto whitespace-normal text-left"
+                  >
                     Sadece @std.yildiz.edu.tr uzantılı mail kabul edilir.
-                  </p>
+                  </Badge>
                 )}
                 {email && isValid && (
-                  <p className="text-xs text-ink mt-1.5">✓ Geçerli okul maili</p>
+                  <Badge variant="soft" className="mt-1.5">
+                    ✓ Geçerli okul maili
+                  </Badge>
                 )}
               </div>
 
               {error && (
-                <div className="text-xs text-warm bg-warn/8 border border-warn/20 rounded-lg p-2.5">
+                <Badge
+                  variant="warn"
+                  className="w-full justify-start h-auto whitespace-normal text-left p-2.5"
+                >
                   {error}
-                </div>
+                </Badge>
               )}
 
-              <button
+              <Button
                 type="submit"
+                size="lg"
                 disabled={loading || !isValid}
-                className="w-full rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full"
               >
                 {loading ? "Gönderiliyor…" : "Sihirli link gönder"}
-              </button>
+              </Button>
             </form>
 
             <p className="text-[0.7rem] text-text-faint mt-5 text-center leading-relaxed">

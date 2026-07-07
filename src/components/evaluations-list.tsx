@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   getEvaluations,
   deleteEvaluation,
@@ -10,10 +13,10 @@ import {
 } from "@/lib/evaluations";
 import { EvaluateModal } from "./evaluate-modal";
 
-const CHIP_TONE: Record<string, string> = {
-  good: "chip-good",
-  ink: "chip-ink",
-  dim: "chip-dim",
+const CHIP_TONE: Record<string, "soft" | "dim"> = {
+  good: "soft",
+  ink: "soft",
+  dim: "dim",
 };
 
 export function EvaluationsList() {
@@ -43,12 +46,9 @@ export function EvaluationsList() {
     <div className="space-y-4">
       {/* Yeni değerlendirme butonu */}
       <div className="flex justify-end">
-        <button
-          onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-        >
-          + Değerlendirme ekle
-        </button>
+        <Button size="lg" onClick={() => setShowModal(true)}>
+          <Plus /> Değerlendirme ekle
+        </Button>
       </div>
 
       {evals.length === 0 ? (
@@ -80,7 +80,7 @@ export function EvaluationsList() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className={`chip ${CHIP_TONE[r.tone]}`}>{r.label}</span>
+                  <Badge variant={CHIP_TONE[r.tone]}>{r.label}</Badge>
                   <span className="font-mono text-lg font-semibold text-text">{ev.score}</span>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export function EvaluationsList() {
                       <div className="text-xs text-text-faint mb-1.5">Güçlü yönler</div>
                       <div className="flex flex-wrap gap-1.5">
                         {ev.strengths.map((s) => (
-                          <span key={s} className="chip chip-good text-[0.65rem]">{s}</span>
+                          <Badge key={s} variant="soft" className="text-[0.65rem]">{s}</Badge>
                         ))}
                       </div>
                     </div>
@@ -103,7 +103,7 @@ export function EvaluationsList() {
                       <div className="text-xs text-text-faint mb-1.5">Geliştirilecek</div>
                       <div className="flex flex-wrap gap-1.5">
                         {ev.improvements.map((s) => (
-                          <span key={s} className="chip chip-warn text-[0.65rem]">{s}</span>
+                          <Badge key={s} variant="warn" className="text-[0.65rem]">{s}</Badge>
                         ))}
                       </div>
                     </div>
@@ -117,7 +117,7 @@ export function EvaluationsList() {
                   <div className="text-xs text-text-faint mb-1.5">Öğrenilen beceriler</div>
                   <div className="flex flex-wrap gap-1.5">
                     {ev.learnedSkills.map((s) => (
-                      <span key={s} className="chip chip-ink text-[0.65rem]">{s}</span>
+                      <Badge key={s} variant="soft" className="text-[0.65rem]">{s}</Badge>
                     ))}
                   </div>
                 </div>

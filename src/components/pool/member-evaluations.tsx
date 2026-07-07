@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getEvaluationsForMember, RESULT_LABELS, type Evaluation } from "@/lib/evaluations";
+import { Badge } from "@/components/ui/badge";
 
-const CHIP_TONE: Record<string, string> = {
-  good: "chip-good",
-  ink: "chip-ink",
-  dim: "chip-dim",
+const CHIP_TONE: Record<string, "soft" | "dim"> = {
+  good: "soft",
+  ink: "soft",
+  dim: "dim",
 };
 
 export function MemberEvaluations({ memberId }: { memberId: string }) {
@@ -48,7 +49,7 @@ export function MemberEvaluations({ memberId }: { memberId: string }) {
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <span className={`chip ${CHIP_TONE[r.tone]} text-[0.6rem]`}>{r.label}</span>
+                <Badge variant={CHIP_TONE[r.tone]} className="text-[0.6rem]">{r.label}</Badge>
                 <span className="font-mono text-sm text-text">{ev.score}</span>
               </div>
             </Link>

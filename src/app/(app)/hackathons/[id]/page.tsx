@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowUpRight } from "lucide-react";
 import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { SEED_MEMBERS } from "@/lib/seed-members";
 import { ApplyButton } from "@/components/apply-button";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function generateStaticParams() {
   return DISCOVERED_HACKATHONS.map((h) => ({ id: h.id }));
@@ -67,11 +71,9 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[0.65rem] ${
-                h.status === "upcoming" ? "chip-good" : h.status === "ongoing" ? "chip-warn" : "chip-dim"
-              }`}>
+              <Badge variant={h.status === "upcoming" ? "soft" : h.status === "ongoing" ? "warn" : "dim"}>
                 {h.status === "upcoming" ? "Yaklaşan" : h.status === "ongoing" ? "Devam eden" : "Tamamlandı"}
-              </span>
+              </Badge>
             </div>
             <h1 className="text-2xl font-semibold text-text leading-tight">{h.name}</h1>
             <div className="text-text-soft mt-1">{h.organizer}</div>
@@ -92,14 +94,11 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
         </div>
 
         {h.externalLink && (
-          <a
-            href={h.externalLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 mt-5 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-          >
-            Resmi siteye git <span aria-hidden>↗</span>
-          </a>
+          <Button asChild size="lg" className="mt-5">
+            <a href={h.externalLink} target="_blank" rel="noopener noreferrer">
+              Resmi siteye git <ArrowUpRight />
+            </a>
+          </Button>
         )}
       </div>
 
@@ -110,7 +109,7 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
           {h.tracks.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {h.tracks.map((t) => (
-                <span key={t} className="chip chip-ink">{t}</span>
+                <Badge key={t} variant="soft">{t}</Badge>
               ))}
             </div>
           ) : (
@@ -122,7 +121,7 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
           {h.chains.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {h.chains.map((c) => (
-                <span key={c} className="chip">{c}</span>
+                <Badge key={c} variant="muted">{c}</Badge>
               ))}
             </div>
           ) : (
@@ -154,9 +153,11 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
               className="flex items-center justify-between gap-3 p-3.5 hover:bg-surface-2 transition-colors first:rounded-t-xl last:rounded-b-xl"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className="h-8 w-8 rounded-full bg-surface-2 border border-line grid place-items-center text-xs font-semibold text-text shrink-0">
-                  {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                </div>
+                <Avatar className="size-8 shrink-0">
+                  <AvatarFallback className="text-xs font-semibold">
+                    {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0">
                   <div className="text-sm text-text truncate">{m.fullName}</div>
                   <div className="text-[0.7rem] text-text-faint truncate">

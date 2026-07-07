@@ -4,6 +4,27 @@ import { useState } from "react";
 import type { SeedMember } from "@/lib/seed-members";
 import type { DiscoveredHackathon } from "@/lib/discovered-hackathons";
 import { createApplication, getInvitableMembers, type ApplicationKind } from "@/lib/applications";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Check, X } from "lucide-react";
 
 const ROLES = [
   "Smart Contract Dev",
@@ -88,45 +109,39 @@ export function ApplyModal({
 
   if (submitted) {
     return (
-      <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onClose}>
-        <div className="card p-8 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+      <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
+        <DialogContent className="sm:max-w-md">
           <div className="text-center">
             <div className="h-12 w-12 rounded-full bg-ink/10 grid place-items-center mx-auto mb-4">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" strokeWidth="2" className="h-6 w-6">
-                <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <Check className="h-6 w-6 text-ink" />
             </div>
-            <h3 className="text-lg font-semibold text-text mb-2">Başvuru gönderildi</h3>
+            <DialogHeader className="mb-2">
+              <DialogTitle className="text-lg">Başvuru gönderildi</DialogTitle>
+            </DialogHeader>
             <p className="text-sm text-text-soft leading-relaxed mb-5">
               {kind === "individual"
                 ? `${hackathon.name} için bireysel başvurun alındı.`
                 : `${hackathon.name} için takım başvurun alındı. Davet edilen ${teamMembers.length} üyeye bildirim gönderildi.`}
             </p>
-            <button
-              onClick={onClose}
-              className="rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-            >
+            <Button size="lg" onClick={onClose}>
               Tamam
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
+        </DialogContent>
+      </Dialog>
     );
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4 overflow-y-auto" onClick={onClose}>
-      <div className="card p-6 max-w-lg w-full my-8" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between mb-5">
-          <div>
-            <h3 className="text-lg font-semibold text-text">Başvur</h3>
-            <p className="text-sm text-text-soft mt-0.5">{hackathon.name}</p>
-          </div>
-          <button onClick={onClose} className="text-text-faint hover:text-text transition-colors" aria-label="kapat">✕</button>
-        </div>
+    <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
+      <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-lg">Başvur</DialogTitle>
+          <DialogDescription>{hackathon.name}</DialogDescription>
+        </DialogHeader>
 
         {/* Tür seçimi */}
-        <div className="mb-5">
+        <div className="mb-1">
           <div className="text-xs text-text-faint mb-2">Başvuru türü</div>
           <div className="grid grid-cols-2 gap-2">
             <button
@@ -152,25 +167,26 @@ export function ApplyModal({
 
         {/* Bireysel: rol + motivasyon */}
         {kind === "individual" && (
-          <div className="space-y-4 mb-5">
+          <div className="space-y-4">
             <div>
-              <label className="text-xs text-text-faint block mb-1.5">Tercih ettiğin rol</label>
-              <select
-                value={preferredRole}
-                onChange={(e) => setPreferredRole(e.target.value)}
-                className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft"
-              >
-                {ROLES.map((r) => (<option key={r} value={r}>{r}</option>))}
-              </select>
+              <Label className="text-xs text-text-faint block mb-1.5">Tercih ettiğin rol</Label>
+              <Select value={preferredRole} onValueChange={setPreferredRole}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Rol seç" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ROLES.map((r) => (<SelectItem key={r} value={r}>{r}</SelectItem>))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <label className="text-xs text-text-faint block mb-1.5">Motivasyon (opsiyonel)</label>
-              <textarea
+              <Label className="text-xs text-text-faint block mb-1.5">Motivasyon (opsiyonel)</Label>
+              <Textarea
                 value={motivation}
                 onChange={(e) => setMotivation(e.target.value)}
                 placeholder="Neden bu hackathona katılmak istiyorsun?"
                 rows={3}
-                className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft resize-none"
+                className="w-full resize-none"
               />
             </div>
           </div>
@@ -179,15 +195,15 @@ export function ApplyModal({
 
         {/* Takım: isim + üye davet */}
         {kind === "team" && (
-          <div className="space-y-4 mb-5">
+          <div className="space-y-4">
             <div>
-              <label className="text-xs text-text-faint block mb-1.5">Takım adı</label>
-              <input
+              <Label className="text-xs text-text-faint block mb-1.5">Takım adı</Label>
+              <Input
                 type="text"
                 value={teamName}
                 onChange={(e) => setTeamName(e.target.value)}
                 placeholder="Takım adı (boş bırakırsan otomatik)"
-                className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft"
+                className="w-full"
               />
             </div>
 
@@ -196,31 +212,42 @@ export function ApplyModal({
                 <div className="text-xs text-text-faint">Takım üyeleri ({teamMembers.length})</div>
                 {teamMembers.map((tm) => (
                   <div key={tm.memberId} className="flex items-center gap-2 bg-surface-2 border border-line rounded-lg p-2.5">
-                    <div className="h-7 w-7 rounded-full bg-surface border border-line grid place-items-center text-[0.65rem] font-semibold text-text shrink-0">
-                      {tm.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                    </div>
+                    <Avatar className="size-7">
+                      <AvatarFallback className="text-[0.65rem] font-semibold">
+                        {tm.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                      </AvatarFallback>
+                    </Avatar>
                     <span className="text-sm text-text truncate flex-1">{tm.name}</span>
-                    <select
-                      value={tm.role}
-                      onChange={(e) => changeMemberRole(tm.memberId, e.target.value)}
-                      className="text-xs bg-surface border border-line rounded px-2 py-1 text-text-soft outline-none"
+                    <Select value={tm.role} onValueChange={(v) => changeMemberRole(tm.memberId, v)}>
+                      <SelectTrigger size="sm" className="text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ROLES.map((r) => (<SelectItem key={r} value={r}>{r}</SelectItem>))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => removeTeamMember(tm.memberId)}
+                      className="text-muted-foreground hover:text-destructive"
+                      aria-label="çıkar"
                     >
-                      {ROLES.map((r) => (<option key={r} value={r}>{r}</option>))}
-                    </select>
-                    <button onClick={() => removeTeamMember(tm.memberId)} className="text-text-faint hover:text-warn text-xs" aria-label="çıkar">✕</button>
+                      <X />
+                    </Button>
                   </div>
                 ))}
               </div>
             )}
 
             <div>
-              <label className="text-xs text-text-faint block mb-1.5">Üye davet et</label>
-              <input
+              <Label className="text-xs text-text-faint block mb-1.5">Üye davet et</Label>
+              <Input
                 type="text"
                 value={inviteSearch}
                 onChange={(e) => setInviteSearch(e.target.value)}
                 placeholder="İsim veya skill ara…"
-                className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft mb-2"
+                className="w-full mb-2"
               />
               {inviteSearch && (
                 <div className="space-y-1 max-h-48 overflow-y-auto">
@@ -230,9 +257,11 @@ export function ApplyModal({
                       onClick={() => addTeamMember(m)}
                       className="w-full flex items-center gap-2.5 rounded-lg p-2 hover:bg-surface-2 transition-colors text-left"
                     >
-                      <div className="h-7 w-7 rounded-full bg-surface-2 border border-line grid place-items-center text-[0.65rem] font-semibold text-text shrink-0">
-                        {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                      </div>
+                      <Avatar className="size-7">
+                        <AvatarFallback className="text-[0.65rem] font-semibold">
+                          {m.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                        </AvatarFallback>
+                      </Avatar>
                       <div className="min-w-0 flex-1">
                         <div className="text-sm text-text truncate">{m.fullName}</div>
                         <div className="text-[0.65rem] text-text-faint truncate">
@@ -252,23 +281,20 @@ export function ApplyModal({
         )}
 
         {/* Gönder */}
-        <div className="flex gap-2 pt-2 border-t border-line-soft">
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-lg border border-line text-text-soft font-medium text-sm px-4 py-2.5 hover:border-ink-soft transition-colors"
-          >
+        <DialogFooter>
+          <Button variant="outline" size="lg" onClick={onClose} className="flex-1">
             İptal
-          </button>
-          <button
+          </Button>
+          <Button
+            size="lg"
             onClick={handleSubmit}
             disabled={kind === "team" && teamMembers.length === 0}
-            className="flex-1 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-1"
           >
             {kind === "team" && teamMembers.length === 0 ? "Önce üye davet et" : "Başvuruyu gönder"}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
-

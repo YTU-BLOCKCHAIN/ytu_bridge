@@ -16,8 +16,19 @@ import {
   type DragEndEvent,
 } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { X } from "lucide-react";
 import { SEED_MEMBERS, type SeedMember } from "@/lib/seed-members";
 import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ROLES = [
   "Smart Contract Dev",
@@ -57,9 +68,9 @@ function DraggableMember({ member }: { member: SeedMember }) {
       }`}
     >
       <div className="flex items-center gap-2.5">
-        <div className="h-8 w-8 rounded-full bg-surface-2 border border-line grid place-items-center text-xs font-semibold text-text shrink-0">
-          {initials}
-        </div>
+        <Avatar className="size-8">
+          <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+        </Avatar>
         <div className="min-w-0 flex-1">
           <div className="text-sm font-medium text-text truncate">{member.fullName}</div>
           <div className="text-[0.68rem] text-text-faint truncate">
@@ -95,30 +106,36 @@ function TeamSlot({
       }`}
     >
       <div className="flex items-center justify-between mb-2">
-        <select
-          value={slot.role}
-          onChange={(e) => onRoleChange(e.target.value as Role)}
-          className="text-xs bg-surface-2 border border-line rounded px-2 py-1 text-text-soft outline-none focus:border-ink-soft"
-        >
-          {ROLES.map((r) => (
-            <option key={r} value={r}>{r}</option>
-          ))}
-        </select>
+        <Select value={slot.role} onValueChange={(v) => onRoleChange(v as Role)}>
+          <SelectTrigger size="sm" className="text-text-soft">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {ROLES.map((r) => (
+              <SelectItem key={r} value={r}>{r}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
         {member && (
-          <button
+          <Button
             onClick={onRemove}
-            className="text-text-faint hover:text-warn text-xs transition-colors"
+            variant="ghost"
+            size="xs"
+            className="text-muted-foreground hover:text-destructive"
             aria-label="üyeyi çıkar"
           >
-            çıkar ✕
-          </button>
+            çıkar
+            <X />
+          </Button>
         )}
       </div>
       {member ? (
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-full bg-surface-2 border border-line grid place-items-center text-xs font-semibold text-text shrink-0">
-            {member.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-          </div>
+          <Avatar className="size-8">
+            <AvatarFallback className="text-xs">
+              {member.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+            </AvatarFallback>
+          </Avatar>
           <div className="min-w-0">
             <div className="text-sm font-medium text-text truncate">{member.fullName}</div>
             <div className="text-[0.68rem] text-text-faint truncate">
@@ -240,22 +257,25 @@ export function TeamBuilder() {
         {/* Sağ: takım slotları */}
         <div>
           <div className="mb-4">
-            <label className="text-xs text-text-faint block mb-1.5">Hackathon</label>
-            <select
+            <Label className="text-xs text-text-faint mb-1.5">Hackathon</Label>
+            <Select
               value={selectedHackathon}
-              onChange={(e) => {
-                setSelectedHackathon(e.target.value);
-                const h = upcoming.find((hh) => hh.id === e.target.value);
+              onValueChange={(value) => {
+                setSelectedHackathon(value);
+                const h = upcoming.find((hh) => hh.id === value);
                 const size = h?.idealTeamSize ?? 4;
                 setSlots(Array.from({ length: size }, (_, i) => ({ memberId: null, role: ROLES[i % ROLES.length] as Role })));
               }}
-              className="w-full bg-surface-2 border border-line rounded-lg px-3 py-2 text-sm text-text outline-none focus:border-ink-soft"
             >
-              {upcoming.map((h) => (
-                <option key={h.id} value={h.id}>{h.name}</option>
-              ))}
-              {upcoming.length === 0 && <option value="">Hackathon yok</option>}
-            </select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Hackathon yok" />
+              </SelectTrigger>
+              <SelectContent>
+                {upcoming.map((h) => (
+                  <SelectItem key={h.id} value={h.id}>{h.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex items-baseline justify-between mb-3">
@@ -297,12 +317,13 @@ export function TeamBuilder() {
                 <div className="text-text">{teamRating}</div>
               </div>
             </div>
-            <button
+            <Button
               disabled={filledSlots.length === 0}
-              className="w-full mt-4 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              size="lg"
+              className="w-full mt-4"
             >
               {filledSlots.length === teamSize ? "Takımı kaydet" : `Takımı kaydet (${filledSlots.length}/${teamSize})`}
-            </button>
+            </Button>
             <p className="text-[0.7rem] text-text-faint mt-2 text-center">
               Kayıt akışı yakında — şu an takım kurmayı test edebilirsin.
             </p>
@@ -314,9 +335,11 @@ export function TeamBuilder() {
         {activeMember ? (
           <div className="card p-3 shadow-lg ring-2 ring-ink">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-full bg-surface-2 border border-line grid place-items-center text-xs font-semibold text-text">
-                {activeMember.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-              </div>
+              <Avatar className="size-8">
+                <AvatarFallback className="text-xs">
+                  {activeMember.fullName.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                </AvatarFallback>
+              </Avatar>
               <div className="text-sm font-medium text-text">{activeMember.fullName}</div>
             </div>
           </div>

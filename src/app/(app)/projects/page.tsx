@@ -2,6 +2,7 @@ import { SEED_PROJECTS } from "@/lib/seed-projects";
 import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { scoreProjectFit } from "@/lib/seed-projects";
 import { ProjectCard } from "@/components/project-card";
+import { Badge } from "@/components/ui/badge";
 
 export default function ProjectsPage() {
   // Her proje için en uygun hackathon'u bul
@@ -55,7 +56,7 @@ export default function ProjectsPage() {
                     </div>
                     <div className="flex gap-1.5">
                       {h.tracks.map((t) => (
-                        <span key={t} className="chip chip-ink text-[0.6rem]">{t}</span>
+                        <Badge key={t} variant="soft" className="text-[0.6rem]">{t}</Badge>
                       ))}
                     </div>
                   </div>
@@ -66,9 +67,9 @@ export default function ProjectsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="font-medium text-text">{project.title}</span>
-                            <span className={`chip text-[0.6rem] ${fit.score >= 60 ? "chip-good" : "chip-dim"}`}>
+                            <Badge variant={fit.score >= 60 ? "soft" : "dim"} className="text-[0.6rem]">
                               {fit.score}/100
-                            </span>
+                            </Badge>
                           </div>
                           {fit.gaps.length > 0 && (
                             <div className="text-[0.72rem] text-warn mt-1">

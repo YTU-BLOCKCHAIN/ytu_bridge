@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+
 // İskelet sayfası — henüz geliştirilmemiş bölümler için tutarlı yer tutucu.
 export function PhaseStage({
   title,
@@ -28,9 +30,9 @@ export function PhaseStage({
         <div className="text-lg font-medium text-text-soft">{title}</div>
         <div className="text-sm text-text-faint mt-2 max-w-md leading-relaxed">{desc}</div>
         {soon && (
-          <div className="mt-5 text-xs text-text-faint border border-line rounded-md px-3 py-1.5">
+          <Badge variant="dim" className="mt-5">
             {soon}
-          </div>
+          </Badge>
         )}
       </div>
 

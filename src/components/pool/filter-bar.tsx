@@ -1,8 +1,18 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Search } from "lucide-react";
 import type { SeedMember, AvailabilityStatus } from "@/lib/seed-members";
 import { MemberCard } from "./member-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AVAILABILITY_OPTIONS: { value: AvailabilityStatus | "all"; label: string }[] = [
   { value: "all", label: "Tümü" },
@@ -65,54 +75,52 @@ export function FilterBar({ members }: { members: SeedMember[] }) {
     <div className="space-y-4">
       {/* Filtre satırı */}
       <div className="card p-3 flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 flex-1 min-w-[180px]">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4 text-text-faint">
-            <circle cx="11" cy="11" r="7" />
-            <path d="m21 21-4.3-4.3" strokeLinecap="round" />
-          </svg>
-          <input
+        <div className="relative flex-1 min-w-[180px]">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
             type="text"
             placeholder="İsim, skill, tag ara…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="bg-transparent text-sm text-text placeholder:text-text-faint outline-none flex-1 min-w-0"
+            className="w-full pl-8"
           />
         </div>
 
-        <select
-          value={skill}
-          onChange={(e) => setSkill(e.target.value)}
-          className="bg-surface-2 border border-line rounded-md text-xs text-text-soft px-2.5 py-1.5 outline-none focus:border-ink-soft"
-        >
-          <option value="all">Tüm skill'ler</option>
-          {allSkills.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        <Select value={skill} onValueChange={setSkill}>
+          <SelectTrigger size="sm">
+            <SelectValue placeholder="Tüm skill'ler" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Tüm skill&apos;ler</SelectItem>
+            {allSkills.map((s) => (
+              <SelectItem key={s} value={s}>{s}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <div className="flex items-center gap-1 bg-surface-2 border border-line rounded-md p-0.5">
           {AVAILABILITY_OPTIONS.map((o) => (
-            <button
+            <Button
               key={o.value}
               onClick={() => setAvailability(o.value)}
-              className={`text-[0.68rem] px-2 py-1 rounded transition-colors ${
-                availability === o.value ? "bg-ink text-surface" : "text-text-faint hover:text-text-soft"
-              }`}
+              size="xs"
+              variant={availability === o.value ? "default" : "ghost"}
             >
               {o.label}
-            </button>
+            </Button>
           ))}
         </div>
 
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as SortValue)}
-          className="bg-surface-2 border border-line rounded-md text-xs text-text-soft px-2.5 py-1.5 outline-none focus:border-ink-soft"
-        >
-          {SORT_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
+        <Select value={sort} onValueChange={(v) => setSort(v as SortValue)}>
+          <SelectTrigger size="sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_OPTIONS.map((o) => (
+              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="text-sm text-text-soft">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { SeedMember } from "@/lib/seed-members";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AvailabilityBadge } from "./availability-badge";
 import { SkillBar } from "./skill-bar";
 
@@ -19,9 +20,9 @@ export function MemberCard({ member }: { member: SeedMember }) {
       {/* Üst: avatar + isim + müsaitlik */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="h-10 w-10 rounded-full bg-surface-2 border border-line grid place-items-center text-sm font-semibold text-text shrink-0">
-            {initials}
-          </div>
+          <Avatar className="size-10">
+            <AvatarFallback>{initials}</AvatarFallback>
+          </Avatar>
           <div className="min-w-0">
             <div className="font-medium text-text truncate">{member.fullName}</div>
             <div className="font-mono text-[0.65rem] text-text-faint truncate">

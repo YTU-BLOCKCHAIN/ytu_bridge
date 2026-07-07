@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   getApplications,
   withdrawApplication,
@@ -11,11 +15,11 @@ import {
   type InviteStatus,
 } from "@/lib/applications";
 
-const STATUS_STYLE: Record<ApplicationStatus, string> = {
-  pending: "chip-ink",
-  approved: "chip-good",
-  rejected: "chip-warn",
-  withdrawn: "chip-dim",
+const STATUS_STYLE: Record<ApplicationStatus, "soft" | "warn" | "dim"> = {
+  pending: "soft",
+  approved: "soft",
+  rejected: "warn",
+  withdrawn: "dim",
 };
 const STATUS_LABEL: Record<ApplicationStatus, string> = {
   pending: "Beklemede",
@@ -23,11 +27,11 @@ const STATUS_LABEL: Record<ApplicationStatus, string> = {
   rejected: "Reddedildi",
   withdrawn: "Geri çekildi",
 };
-const INVITE_STYLE: Record<InviteStatus, string> = {
-  pending: "chip-ink",
-  accepted: "chip-good",
-  declined: "chip-warn",
-  expired: "chip-dim",
+const INVITE_STYLE: Record<InviteStatus, "soft" | "warn" | "dim"> = {
+  pending: "soft",
+  accepted: "soft",
+  declined: "warn",
+  expired: "dim",
 };
 const INVITE_LABEL: Record<InviteStatus, string> = {
   pending: "Beklemede",
@@ -70,12 +74,11 @@ export function ApplicationsList() {
         <p className="text-sm text-text-faint mb-4">
           Bir hackathona gidip "Başvur" de.
         </p>
-        <Link
-          href="/directory"
-          className="inline-flex items-center gap-2 rounded-lg bg-ink text-surface font-medium text-sm px-4 py-2.5 hover:bg-ink-bright transition-colors"
-        >
-          Hackathonlara göz at →
-        </Link>
+        <Button asChild size="lg">
+          <Link href="/directory">
+            Hackathonlara göz at <ArrowRight />
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -94,9 +97,9 @@ export function ApplicationsList() {
                 {app.kind === "individual" ? "Bireysel başvuru" : `Joker takım${app.teamName ? ` · ${app.teamName}` : ""}`}
               </div>
             </div>
-            <span className={`chip ${STATUS_STYLE[app.status]} shrink-0`}>
+            <Badge variant={STATUS_STYLE[app.status]} className="shrink-0">
               {STATUS_LABEL[app.status]}
-            </span>
+            </Badge>
           </div>
 
           {/* Detay */}
@@ -117,15 +120,17 @@ export function ApplicationsList() {
                   const invite = app.invites.find((i) => i.toMemberId === tm.memberId);
                   return (
                     <div key={tm.memberId} className="flex items-center gap-2.5">
-                      <div className="h-7 w-7 rounded-full bg-surface-2 border border-line grid place-items-center text-[0.65rem] font-semibold text-text shrink-0">
-                        {tm.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-                      </div>
+                      <Avatar className="size-7 shrink-0">
+                        <AvatarFallback className="text-[0.65rem] font-semibold text-text">
+                          {tm.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
+                        </AvatarFallback>
+                      </Avatar>
                       <span className="text-sm text-text truncate flex-1">{tm.name}</span>
                       <span className="text-xs text-text-faint shrink-0">{tm.role}</span>
                       {invite && (
-                        <span className={`chip ${INVITE_STYLE[invite.status]} text-[0.6rem] shrink-0`}>
+                        <Badge variant={INVITE_STYLE[invite.status]} className="text-[0.6rem] shrink-0">
                           {INVITE_LABEL[invite.status]}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   );
