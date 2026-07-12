@@ -1,11 +1,6 @@
 import Link from "next/link";
 import type { SeedMember } from "@/lib/seed-members";
 import { AvailabilityBadge } from "./availability-badge";
-import { SkillBar } from "./skill-bar";
-
-function shortAddr(addr: string) {
-  return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
-}
 
 export function MemberCard({ member }: { member: SeedMember }) {
   const initials = member.fullName
@@ -24,27 +19,18 @@ export function MemberCard({ member }: { member: SeedMember }) {
           </div>
           <div className="min-w-0">
             <div className="font-medium text-text truncate">{member.fullName}</div>
-            <div className="font-mono text-[0.65rem] text-text-faint truncate">
-              {shortAddr(member.walletAddress)}
-            </div>
+            {/* Programlama bilgisi — skill adları düz metin, seviye yok */}
+            {member.skills.length > 0 && (
+              <div className="text-[0.68rem] text-text-faint truncate mt-0.5">
+                {member.skills.map((s) => s.name).join(" · ")}
+              </div>
+            )}
           </div>
         </div>
         <AvailabilityBadge status={member.availability.status} compact />
       </div>
 
-      {/* Skill'ler (ilk 3) */}
-      <div className="space-y-1.5 mb-3">
-        {member.skills.slice(0, 3).map((s) => (
-          <SkillBar key={s.name} name={s.name} level={s.level} compact />
-        ))}
-        {member.skills.length > 3 && (
-          <div className="text-[0.65rem] text-text-faint pl-1">
-            +{member.skills.length - 3} daha
-          </div>
-        )}
-      </div>
-
-      {/* Alt: geçmiş */}
+      {/* Alt: hackathon katılımı */}
       <div className="flex items-center justify-between pt-3 border-t border-line-soft">
         <div className="text-[13px] text-text-soft">{member.hackathonCount} hackathon</div>
         {member.bestResult && member.bestResult !== "participated" && (
@@ -54,4 +40,5 @@ export function MemberCard({ member }: { member: SeedMember }) {
     </Link>
   );
 }
+
 

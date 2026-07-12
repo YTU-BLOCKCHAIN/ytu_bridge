@@ -2,16 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SEED_MEMBERS } from "@/lib/seed-members";
 import { AvailabilityBadge } from "@/components/pool/availability-badge";
-import { SkillBar } from "@/components/pool/skill-bar";
 import { MemberCard } from "@/components/pool/member-card";
 import { MemberEvaluations } from "@/components/pool/member-evaluations";
 
 export function generateStaticParams() {
   return SEED_MEMBERS.map((m) => ({ id: m.id }));
-}
-
-function shortAddr(addr: string) {
-  return `${addr.slice(0, 8)}…${addr.slice(-6)}`;
 }
 
 export default function MemberDetailPage({
@@ -49,7 +44,6 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl font-semibold text-text">{member.fullName}</h1>
             <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-              <span className="font-mono text-xs text-text-faint">{shortAddr(member.walletAddress)}</span>
               <AvailabilityBadge status={member.availability.status} until={member.availability.until} />
             </div>
             {member.tags.length > 0 && (
@@ -64,13 +58,16 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
       </div>
 
       <div className="grid md:grid-cols-[1.5fr_1fr] gap-4">
-        {/* Skill'ler */}
+        {/* Programlama bilgisi — skill adları, seviye yok */}
         <div className="card p-5">
-          <h2 className="text-sm font-medium text-text mb-4">Beceriler · {member.skills.length}</h2>
-          <div className="space-y-2.5">
+          <h2 className="text-sm font-medium text-text mb-4">Programlama bilgisi</h2>
+          <div className="flex flex-wrap gap-2">
             {member.skills.map((s) => (
-              <SkillBar key={s.name} name={s.name} level={s.level} />
+              <span key={s.name} className="chip chip-ink">{s.name}</span>
             ))}
+            {member.skills.length === 0 && (
+              <span className="text-sm text-text-faint">Belirtilmemiş</span>
+            )}
           </div>
         </div>
 
@@ -83,7 +80,6 @@ async function DetailContent({ params }: { params: Promise<{ id: string }> }) {
             value={member.bestResult ?? "—"}
             highlight={Boolean(member.bestResult && member.bestResult !== "participated")}
           />
-          <Stat label="Email" value={member.studentEmail} mono />
         </div>
       </div>
 
