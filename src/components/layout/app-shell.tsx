@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { BridgeMark } from "@/components/layout/bridge-mark";
 
-// Üye odaklı navigasyon — yönetim dili (faz, kanal, döngü) yok.
+// Üye odaklı navigasyon — yönetim özellikleri (Takım kur, Değerlendirmeler) gizli.
 const NAV = [
   { href: "/", label: "Ana sayfa", icon: "home" },
   { href: "/pool", label: "Topluluk", icon: "users" },
   { href: "/directory", label: "Hackathonlar", icon: "compass" },
   { href: "/projects", label: "Projeler", icon: "cube" },
-  { href: "/assignments", label: "Takım kur", icon: "shuffle" },
   { href: "/applications", label: "Başvurularım", icon: "inbox" },
-  { href: "/evaluations", label: "Değerlendirmeler", icon: "check" },
 ] as const;
 
 const ICONS: Record<string, React.ReactNode> = {

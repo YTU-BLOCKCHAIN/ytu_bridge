@@ -2,8 +2,10 @@ import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { HackathonCard } from "@/components/hackathon-card";
 
 export default function DirectoryPage() {
-  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming");
-  const others = DISCOVERED_HACKATHONS.filter((h) => h.status !== "upcoming");
+  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming")
+    .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime());
+  const others = DISCOVERED_HACKATHONS.filter((h) => h.status !== "upcoming")
+    .sort((a, b) => new Date(b.dateStart).getTime() - new Date(a.dateStart).getTime());
 
   return (
     <div className="space-y-6">

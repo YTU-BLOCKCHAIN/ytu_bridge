@@ -2,9 +2,11 @@ import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { HackathonCard } from "@/components/hackathon-card";
 
 export default function DiscoveryPage() {
-  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming");
-  const ongoing = DISCOVERED_HACKATHONS.filter((h) => h.status === "ongoing");
-  const completed = DISCOVERED_HACKATHONS.filter((h) => h.status === "completed");
+  const byDate = (a: typeof DISCOVERED_HACKATHONS[number], b: typeof DISCOVERED_HACKATHONS[number]) =>
+    new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime();
+  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming").sort(byDate);
+  const ongoing = DISCOVERED_HACKATHONS.filter((h) => h.status === "ongoing").sort(byDate);
+  const completed = DISCOVERED_HACKATHONS.filter((h) => h.status === "completed").sort(byDate);
 
   return (
     <div className="space-y-6">

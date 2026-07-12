@@ -4,7 +4,8 @@ import { SEED_MEMBERS } from "@/lib/seed-members";
 import { BridgeMark } from "@/components/layout/bridge-mark";
 
 export default function Home() {
-  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming");
+  const upcoming = DISCOVERED_HACKATHONS.filter((h) => h.status === "upcoming")
+    .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime());
   const availableMembers = SEED_MEMBERS.filter((m) => m.availability.status === "available").length;
 
   return (
