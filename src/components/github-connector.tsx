@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DISCOVERED_HACKATHONS, type Chain, type HackathonTrack } from "@/lib/discovered-hackathons";
+import { DISCOVERED_HACKATHONS } from "@/lib/discovered-hackathons";
 import { scoreProjectFit } from "@/lib/seed-projects";
 
 interface GhRepo {
@@ -12,74 +12,37 @@ interface GhRepo {
   html_url: string;
   topics: string[];
   updated_at?: string;
+  // API'den gelen sınıflandırma
+  chains: string[];
+  tracks: string[];
+  tech: string[];
+  isBlockchain: boolean;
+  signalCount: number;
 }
 
 const TOKEN_KEY = "gh_token";
-
-// Repo'dan zincir/track/tech çıkarımı (basit heuristic)
-function inferRepoMeta(repo: GhRepo) {
-  const text = `${repo.name} ${repo.description || ""} ${repo.topics.join(" ")} ${repo.language || ""}`.toLowerCase();
-  const chains: Chain[] = [];
-  const tracks: HackathonTrack[] = [];
-  const tech: string[] = [];
-
-  // Zincir tespiti
-  if (/solana|anchor|rust/.test(text)) chains.push("Solana");
-  if (/ethereum|solidity|evm|foundry|hardhat/.test(text)) chains.push("Ethereum");
-  if (/base/.test(text)) chains.push("Base");
-  if (/monad/.test(text)) chains.push("Monad");
-  if (/stellar|soroban/.test(text)) chains.push("Stellar");
-  if (/polygon/.test(text)) chains.push("Polygon");
-  if (/arbitrum/.test(text)) chains.push("Arbitrum");
-  if (/optimism/.test(text)) chains.push("Optimism");
-  if (/algorand/.test(text)) chains.push("Algorand");
-  if (/sui/.test(text)) chains.push("Sui");
-  if (/near/.test(text)) chains.push("NEAR");
-  if (/injective/.test(text)) chains.push("Injective");
-  if (/bnb/.test(text)) chains.push("BNB");
-
-  // Track tespiti
-  if (/defi|lending|swap|liquidity|yield|token|staking/.test(text)) tracks.push("DeFi");
-  if (/nft|game|gaming|collectible|erc-721|erc-1155/.test(text)) tracks.push("NFT/Gaming");
-  if (/tooling|infra|sdk|api|bridge|indexer/.test(text)) tracks.push("Infra/Tooling");
-  if (/ai|ml|tensorflow|llm|agent/.test(text)) tracks.push("AI×Web3");
-  if (/zk|privacy|stealth|cryptography/.test(text)) tracks.push("ZK/Privacy");
-  if (/social|consumer|dao|governance/.test(text)) tracks.push("Social/Consumer");
-
-  // Tech stack
-  if (/next\.?js|react/.test(text)) tech.push("Next.js / React");
-  if (/solidity/.test(text)) tech.push("Solidity");
-  if (/rust|anchor/.test(text)) tech.push("Rust");
-  if (/typescript/.test(text)) tech.push("TypeScript");
-  if (/tailwind/.test(text)) tech.push("Tailwind");
-  if (/tensorflow|ml/.test(text)) tech.push("AI/ML");
-
-  return { chains, tracks, tech };
-}
 
 export function GitHubConnector() {
   const [token, setToken] = useState<string | null>(null);
   const [login, setLogin] = useState<string | null>(null);
   const [repos, setRepos] = useState<GhRepo[]>([]);
+  const [totalRepos, setTotalRepos] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedRepo, setSelectedRepo] = useState<string | null>(null);
 
-  // localStorage'dan token oku + URL'den gelen token yakala
   useEffect(() => {
     const saved = localStorage.getItem(TOKEN_KEY);
     if (saved) {
       setToken(saved);
       fetchRepos(saved);
     }
-    // URL'de gh_token varsa (OAuth dönüşü)
     const params = new URLSearchParams(window.location.search);
-    const ghToken = params.get("gh_token") || (params.get("gh_demo") ? "ghp_demo_token" : null);
+    const ghToken = params.get("gh_token");
     if (ghToken) {
       localStorage.setItem(TOKEN_KEY, ghToken);
       setToken(ghToken);
       fetchRepos(ghToken);
-      // URL'i temizle
       window.history.replaceState({}, "", "/projects");
     }
   }, []);
@@ -97,6 +60,7 @@ export function GitHubConnector() {
       } else {
         setLogin(data.login);
         setRepos(data.repos);
+        setTotalRepos(data.totalRepos ?? data.repos.length);
       }
     } catch {
       setError("Bağlantı hatası");
@@ -122,7 +86,10 @@ export function GitHubConnector() {
     .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime());
 
   const selectedRepoData = repos.find((r) => r.name === selectedRepo);
-  const selectedMeta = selectedRepoData ? inferRepoMeta(selectedRepoData) : null;
+  // API'den gelen sınıflandırma (chains/tracks/tech) — inferRepoMeta gerekmez
+  const selectedMeta = selectedRepoData
+    ? { chains: selectedRepoData.chains, tracks: selectedRepoData.tracks, tech: selectedRepoData.tech }
+    : null;
 
   return (
     <div className="card p-5">
@@ -160,11 +127,15 @@ export function GitHubConnector() {
         <div className="text-center py-6 text-text-faint text-sm">Repo'lar çekiliyor…</div>
       )}
 
-      {/* Repo listesi */}
+      {/* Repo listesi — sadece blockchain projeleri */}
       {token && !loading && repos.length > 0 && (
         <div className="space-y-2 mb-4">
-          <div className="text-xs text-text-faint mb-2">{repos.length} repo · tıkla ve uygunluk test et</div>
-          <div className="grid sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+          <div className="text-xs text-text-faint mb-2">
+            {repos.length} blockchain proje
+            {totalRepos > repos.length && <span> · {totalRepos - repos.length} blockchain dışı elendi</span>}
+            {" · tıkla ve uygunluk test et"}
+          </div>
+          <div className="grid sm:grid-cols-2 gap-2 max-h-72 overflow-y-auto">
             {repos.map((r) => (
               <button
                 key={r.name}
@@ -182,15 +153,35 @@ export function GitHubConnector() {
                 {r.description && (
                   <div className="text-xs text-text-faint mt-0.5 truncate">{r.description}</div>
                 )}
+                {/* API'den gelen zincir/track chip'leri */}
+                {(r.chains.length > 0 || r.tracks.length > 0) && (
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {r.chains.slice(0, 2).map((c) => (
+                      <span key={c} className="chip chip-ink text-[0.6rem] px-1.5 py-0.5">{c}</span>
+                    ))}
+                    {r.tracks.slice(0, 2).map((t) => (
+                      <span key={t} className="chip chip-good text-[0.6rem] px-1.5 py-0.5">{t}</span>
+                    ))}
+                  </div>
+                )}
                 <div className="flex items-center gap-2 mt-1.5 text-[0.65rem] text-text-faint">
                   <span>★ {r.stars}</span>
-                  {r.topics.slice(0, 3).map((t) => (
+                  {r.topics.slice(0, 2).map((t) => (
                     <span key={t} className="chip chip-dim text-[0.6rem] px-1.5 py-0.5">{t}</span>
                   ))}
                 </div>
               </button>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Blockchain proje yok */}
+      {token && !loading && repos.length === 0 && !error && (
+        <div className="text-center py-6 text-text-faint text-sm">
+          {totalRepos > 0
+            ? `${totalRepos} repo bulundu ama hiçbiri blockchain/web3 projesi değil.`
+            : "Hiç repo bulunamadı."}
         </div>
       )}
 
@@ -268,12 +259,6 @@ export function GitHubConnector() {
           >
             GitHub'da aç ↗
           </a>
-        </div>
-      )}
-
-      {token && !loading && repos.length === 0 && !error && (
-        <div className="text-center py-6 text-text-faint text-sm">
-          Hiç repo bulunamadı (fork'lar hariç tutulur).
         </div>
       )}
     </div>
