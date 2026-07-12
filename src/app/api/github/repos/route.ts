@@ -10,18 +10,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "no_token" }, { status: 401 });
   }
 
-  // Demo token ise sahte repo döndür — config yoksa demo kalır
-  if (token === "ghp_demo_token") {
-    return NextResponse.json({
-      login: "demo-user",
-      repos: [
-        { name: "defi-lending-dapp", description: "Aave benzeri lending protocolü — EVM", language: "Solidity", stars: 12, html_url: "https://github.com/demo/defi-lending", topics: ["defi", "solidity", "ethereum"] },
-        { name: "nft-marketplace", description: "NFT marketplace — Next.js + ERC-721", language: "TypeScript", stars: 8, html_url: "https://github.com/demo/nft-marketplace", topics: ["nft", "nextjs", "ethereum"] },
-        { name: "solana-sniper-bot", description: "Solana üzerinde sniper bot — Rust + Anchor", language: "Rust", stars: 23, html_url: "https://github.com/demo/solana-sniper", topics: ["solana", "anchor", "rust"] },
-      ],
-    });
-  }
-
   try {
     // Önce kullanıcı bilgisi
     const userRes = await fetch("https://api.github.com/user", {
