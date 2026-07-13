@@ -159,4 +159,49 @@ body {
   }
 }
 
+/* ---- UI düzeltmeleri: yazı modu sorunu + mobil güvenli alan ---- */
+
+/* Navigasyon, buton, ikon, logo — seçilemez (yazı modu çıkmasın) */
+nav, button, a, svg, .chip, [role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Form input'lar — seçilebilir (yazı yazılabilsin) */
+input, textarea, select, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Mobil alt nav için güvenli alan (iPhone notch) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Başlıklar — yazı seçimi düzeltme, font ağırlığı */
+h1, h2, h3 {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* Link başlıklarda cursor pointer */
+a h1, a h2, a h3, button h1, button h2, button h3 {
+  cursor: pointer;
+}
+
+/* Mobil: input zoom engelle (16px altı font zoom yapar) */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
+/* Kart tıklanabilir alanlarda cursor pointer */
+a.card, button.card, .card-hover {
+  cursor: pointer;
+}
+
+
 
