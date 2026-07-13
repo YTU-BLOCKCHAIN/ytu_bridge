@@ -9,6 +9,7 @@ const NAV = [
   { href: "/directory", label: "Hackathonlar", icon: "compass" },
   { href: "/projects", label: "Projeler", icon: "cube" },
   { href: "/applications", label: "Başvurularım", icon: "inbox" },
+  { href: "/admin", label: "Üye yönetimi", icon: "check" },
 ] as const;
 
 const ICONS: Record<string, React.ReactNode> = {

@@ -20,6 +20,19 @@ export function LoginForm() {
     setLoading(true);
 
     if (mode === "signup") {
+      // Önce whitelist kontrolü — email onaylı listede mi?
+      const { data: allowed, error: checkError } = await supabase
+        .from("allowed_emails")
+        .select("email")
+        .eq("email", email.toLowerCase())
+        .maybeSingle();
+
+      if (checkError || !allowed) {
+        setLoading(false);
+        setError("Bu mail kulüp üye listesinde yok. Yöneticiden eklemesini iste.");
+        return;
+      }
+
       // Kayıt — hesap oluştur
       const { data, error } = await supabase.auth.signUp({ email, password });
       setLoading(false);
